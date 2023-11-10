@@ -11,7 +11,7 @@ function App() {
     const fetchData = async () => {
       try {
 
-        const response = await axios.get(apiUrl);
+        const response = await axios.get(apiUrl); //crawl data from website
         const htmlData = response.data;
 
         const regexName = /<h1[^>]*class="name___120FN"[^>]*><span>([^<]+)<\/span><\/h1>/;
@@ -34,9 +34,9 @@ function App() {
             imageUrlProduct: matchImageUrl[1],
           };
 
-        await set(ref(database, 'valueProducts'), listValueProduct);
+        await set(ref(database, 'valueProducts'), listValueProduct); //put data to firebase
 
-        const firebaseResponse = await get(ref(database, 'valueProducts'));
+        const firebaseResponse = await get(ref(database, 'valueProducts'));  //call data from firebase then processing
         const firebaseData = firebaseResponse.val();
         console.log('Firebase Data:', firebaseData);
 
@@ -54,8 +54,6 @@ function App() {
   const handleInputChange = (event) => {
     setApiUrl(event.target.value);
   };
-
-  console.log(apiUrl);
 
   return (
     <div className="App">
