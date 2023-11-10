@@ -1,0 +1,29 @@
+1. Make a dir
+2. git init -> Init local repository
+3. git add "filename" -> Stage file: *.cs, Services/*.cs
+4. git commit -m "Message to commit"
+
+5. git checkout "branchName" -> switch branch
+6. git checkout -b "newbranch" -> create new branch
+6.1 git checkout -b "newbranch" "remoteBranch" -> (current branch hotfix) -> git checkout -b hotfix1 origin/main
+7. git branch -> show local branch
+8. git branch --remote -> show remote branch
+9. git remote add "remoteName" repoURL -> add remote branch to local repository
+10. git fetch "remoteName" -> get update from Server
+11. git pull "remoteName" "branchName" -> pull code changes (short command: git pull)
+12. git push "remoteName" "branchName" -> push the changes(short command: git push)
+
+13. git rebase "remoteBranch/localBranch" -> git push -f
+14. git merge "remoteBranch/localBranch"
+15. git stash [-u](git stash push) -> [-u] optional to stash untracked files
+15.1 git stash -m "Message"
+16. git stash apply [--index 1] / git stash pop [--index 1]
+17. git stash list
+
+18. git reset "branchName" / git reset HEAD~ -> Move Head Pointer of current branch to new branch -> git push -f
+19. git reset --hard
+20. git revert HEAD~
+
+21. git branch -D "Local_Branch_Name" -> Remove local branch
+22. git log --oneline -> show all commits with commitSha (9b9fa74)
+23. git cherry-pick commitSha
