@@ -2,7 +2,7 @@ import './App.css';
 import React, { useEffect, useState, useRef} from 'react';
 import axios from 'axios';
 import { database, ref, get, set } from './firebase'; 
-import { Layout, Input, Button, Tooltip, Col, Row, Avatar, Flex, Spin, Image,  } from 'antd';
+import { Layout, Input, Button, Tooltip, Col, Row, Avatar, Flex, Spin, Image} from 'antd';
 import { SendOutlined} from '@ant-design/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRobot, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -232,7 +232,11 @@ function App() {
               </Col>
               <Col className="gutter-row icon-search-footer" span={1}>
                   <Tooltip title="search">
-                    <Button onClick={handleButtonClick} type="dashed" shape="circle" icon={<SendOutlined />} size="large"/>
+                    {loading ?(
+                    <Button onClick={handleButtonClick} type="dashed" shape="circle" icon={<SendOutlined />} size="large" disabled loading/>
+                    ) : (
+                      <Button onClick={handleButtonClick} type="dashed" shape="circle" icon={<SendOutlined />} size="large"/>
+                    )}
                   </Tooltip>
               </Col>
             </Row>
