@@ -95,7 +95,7 @@
 
 .text-area-seatch-chat-box::placeholder {
   /* Áp dụng kiểu cho placeholder ở đây */
-  color: white; /* Màu chữ xám nhạt */
+  color: rgb(178, 175, 175); /* Màu chữ xám nhạt */
   font-style: italic; /* In nghiêng */
   /* Thêm các kiểu khác tùy ý */
 }

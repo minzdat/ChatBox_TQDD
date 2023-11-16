@@ -40,7 +40,7 @@ function App() {
         return [...prevFirebaseData, 'Product not found in HTML'];
       });
     }
-  }, [inputTextUrl, dataFound]);
+  }, [inputTextUrl, dataFound, apiUrl]);
 
   useEffect(() => {
     console.log('data2');
@@ -117,6 +117,10 @@ function App() {
       console.error('Error fetching data:', error);
     }
   };
+
+  const handleSend = () => {
+    setInputTextUrl('');
+  }
 
   return (
     <div className="App">
@@ -229,13 +233,27 @@ function App() {
                     size="large"
                     className='text-area-seatch-chat-box'
                   />
+                  <Button onClick={handleSend}></Button>
               </Col>
               <Col className="gutter-row icon-search-footer" span={1}>
                   <Tooltip title="search">
                     {loading ?(
-                    <Button onClick={handleButtonClick} type="dashed" shape="circle" icon={<SendOutlined />} size="large" disabled loading/>
+                    <Button 
+                      // onClick={handleButtonClick} 
+                      type="dashed" 
+                      shape="circle" 
+                      icon={<SendOutlined />} 
+                      size="large" 
+                      loading
+                    />
                     ) : (
-                      <Button onClick={handleButtonClick} type="dashed" shape="circle" icon={<SendOutlined />} size="large"/>
+                      <Button 
+                        onClick={handleButtonClick} 
+                        type="dashed" 
+                        shape="circle" 
+                        icon={<SendOutlined />} 
+                        size="large"
+                      />
                     )}
                   </Tooltip>
               </Col>
