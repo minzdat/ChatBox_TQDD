@@ -110,6 +110,8 @@ function App() {
           setDataFound(true);
           const response = await axios.get(apiUrl); //crawl data from website
           setHtmlData(response.data);
+          setApiUrl('');
+          
         }
       }
     }
@@ -117,11 +119,6 @@ function App() {
       console.error('Error fetching data:', error);
     }
   };
-
-  const handleSend = () => {
-    setInputTextUrl('');
-  }
-
   return (
     <div className="App">
       <div className='App-content'>
@@ -138,15 +135,15 @@ function App() {
                 <Flex justify='center' align='flex-start'>
                   {showSpin ? (
                     <>
-                      <Avatar className='avatar-chat-box' size={50}><FontAwesomeIcon beatFade icon={faRobot} size="2xl" style={{color: "#19c37d",}} /></Avatar>
+                      <Avatar className='avatar-chat-box'  size={50}><FontAwesomeIcon beatFade icon={faRobot} size="2xl" style={{color: "#19c37d",}} /></Avatar>
                       <Spin size='large'/>
                     </>
                   ) : (
                     <>
-                      <Avatar className='avatar-chat-box' size={50}><FontAwesomeIcon icon={faRobot} size="2xl" style={{color: "#19c37d",}} /></Avatar>
-                      <span className='chat-message'>
+                      <Avatar className='avatar-chat-box'  size={50}><FontAwesomeIcon icon={faRobot} size="2xl" style={{color: "#19c37d",}} /></Avatar>
+                      <span  className='chat-message'  >
                         Hello! I'm your virtual assistant. Please enter the product URL, and I will provide detailed information and advice for you. Thank you for visiting!
-                      </span>
+                      </span >
                     </>
                   )}
                 </Flex>
@@ -156,7 +153,7 @@ function App() {
                   <Flex key={index} gap="middle" align="start" justify="end" className='row-message-user'>
                     <Flex justify='center' align='center'>
                       <span className='chat-message'>{apiUrl}</span>
-                      <Avatar className='avatar-user-chat-box' size={50}><FontAwesomeIcon icon={faUser} size='2xl' style={{color: "#17c7ff",}} /></Avatar>
+                      <Avatar className='avatar-user-chat-box'  size={50}><FontAwesomeIcon icon={faUser} size='2xl' style={{color: "#17c7ff",}} /></Avatar>
                     </Flex>
                   </Flex>
                   {firebaseData[index] && (
@@ -225,36 +222,26 @@ function App() {
 
           <Footer className='footer-chat-box'>
             <Row gutter={5} justify={'center'}>
-              <Col className="gutter-row" span={10}>
+              <Col className="gutter-row" xs={20} sm={20} md={15} lg={15} xl={15} xxl={15}>
                   <TextArea
                     placeholder="Enter the product URL you want to search for"
-                    autoSize={{ minRows: 1, maxRows: 6 }}                    
+                    autoSize={{ minRows: 1, maxRows: 6 }}                
+                    value={apiUrl}
                     onChange={(e) => handleInputChange(e.target.value)}
                     size="large"
                     className='text-area-seatch-chat-box'
                   />
-                  <Button onClick={handleSend}></Button>
               </Col>
-              <Col className="gutter-row icon-search-footer" span={1}>
+              <Col className="gutter-row icon-search-footer" xs={0}>
                   <Tooltip title="search">
-                    {loading ?(
                     <Button 
-                      // onClick={handleButtonClick} 
+                      onClick={handleButtonClick} 
                       type="dashed" 
                       shape="circle" 
                       icon={<SendOutlined />} 
                       size="large" 
-                      loading
+                      loading = {loading}
                     />
-                    ) : (
-                      <Button 
-                        onClick={handleButtonClick} 
-                        type="dashed" 
-                        shape="circle" 
-                        icon={<SendOutlined />} 
-                        size="large"
-                      />
-                    )}
                   </Tooltip>
               </Col>
             </Row>
