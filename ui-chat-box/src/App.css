@@ -92,3 +92,53 @@
   padding: 17px;
   height: fit-content;
 }
+
+.text-area-seatch-chat-box::placeholder {
+  /* Áp dụng kiểu cho placeholder ở đây */
+  color: rgb(178, 175, 175); /* Màu chữ xám nhạt */
+  font-style: italic; /* In nghiêng */
+  /* Thêm các kiểu khác tùy ý */
+}
+
+/* Mobile devices */
+@media screen and (max-width: 576px) {
+  .display-content-chat-box{
+    margin-right: -160px ;
+    margin-left: -160px;
+  }
+  .avatar-chat-box {
+    margin-right: 10px;
+    margin-left: -40px;
+    height: 10px;
+    width: 10px;
+  }
+
+  .chat-message {
+    /* Adjust styles for smaller screens */
+    font-size: 14px; /* Example adjustment, modify as needed */
+  }
+  .img-product-firebase{
+    size: 1px;
+  }
+  .content-product-then-image{
+    margin-left: 1px;
+  
+  }
+  .text-area-seatch-chat-box{
+    font-size: 15px;
+    padding: 14px;
+    height: fit-content;
+  }
+}
+
+@media screen and (min-width: 576px) and (max-width: 768px) {
+  .display-content-chat-box{
+    margin-right: -160px ;
+    margin-left: -160px;
+  }
+  .avatar-chat-box {
+    height: 20px;
+    width: 20px;
+    margin-left: -25px;
+  }
+}
