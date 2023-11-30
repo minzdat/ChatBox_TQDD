@@ -67,7 +67,7 @@
   background-color: rgb(19,19,20); 
   border-radius: 8px; 
   padding: 20px;
-  width: 45vw;
+  max-width: 45vw;
   word-wrap: break-word;
   color: white;
   font-size: 16px;
