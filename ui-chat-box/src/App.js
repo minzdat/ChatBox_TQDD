@@ -128,13 +128,13 @@ function App() {
                             <p className='content-product-then-image'>I hope the product below matches your description. If you need any further assistance, please ask me more questions.</p>
                             <Row gutter={5}  justify="center">
                               <Col span={8}>
-                                <Image className='img-product-firebase' width={200} src={firebaseData[index].imageUrlProduct1} alt="Product1" />
+                                <Image className='img-product-firebase' width={200} src={require(`${firebaseData[index].imageUrlProduct1}`)} alt="Product1" />
                               </Col>
                               <Col span={8}>
-                                <Image className='img-product-firebase' width={200} src={firebaseData[index].imageUrlProduct2} alt="Product2" />
+                                <Image className='img-product-firebase' width={200} src={require(`${firebaseData[index].imageUrlProduct2}`)} alt="Product2" />
                               </Col>
                               <Col span={8}>
-                                <Image className='img-product-firebase' width={200} src={firebaseData[index].imageUrlProduct3} alt="Product3" />
+                                <Image className='img-product-firebase' width={200} src={require(`${firebaseData[index].imageUrlProduct3}`)} alt="Product3" />
                               </Col>
                             </Row>
                           </span>
@@ -161,13 +161,13 @@ function App() {
                           <p className='content-product-then-image'>I hope the product below matches your description. If you need any further assistance, please ask me more questions.</p>
                           <Row gutter={5}  justify="center">
                               <Col span={8}>
-                                <Image className='img-product-firebase' width={200} src={product.imageUrlProduct1} alt="Product1" />
+                                <Image className='img-product-firebase' width={200} src={require(`${product.imageUrlProduct1}`)} alt="Product1" />
                               </Col>
                               <Col span={8}>
-                                <Image className='img-product-firebase' width={200} src={product.imageUrlProduct2} alt="Product2" />
+                                <Image className='img-product-firebase' width={200} src={require(`${product.imageUrlProduct2}`)} alt="Product2" />
                               </Col>
                               <Col span={8}>
-                                <Image className='img-product-firebase' width={200} src={product.imageUrlProduct3} alt="Product3" />
+                                <Image className='img-product-firebase' width={200} src={require(`${product.imageUrlProduct3}`)} alt="Product3" />
                               </Col>
                           </Row>
                         </span>
