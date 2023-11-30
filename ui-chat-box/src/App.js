@@ -1,6 +1,5 @@
 import './App.css';
 import React, { useEffect, useState, useRef} from 'react';
-import axios from 'axios';
 import { database, ref, get, set } from './firebase'; 
 import { Layout, Input, Button, Tooltip, Col, Row, Avatar, Flex, Spin, Image} from 'antd';
 import { SendOutlined} from '@ant-design/icons';
@@ -14,11 +13,9 @@ function App() {
 
   const [apiUrl, setApiUrl] = useState(null);
   const [inputTextUrl, setInputTextUrl] = useState([]);
-  const [htmlData, setHtmlData] = useState(null);
   const [firebaseData, setFirebaseData] = useState([]);
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(false);
   const [showSpin, setShowSpin] = useState(true);
-  const [dataFound, setDataFound] = useState(true);
 
   const scrollContainerRef = useRef(null);
   
@@ -28,97 +25,63 @@ function App() {
     }, 1000);
     return () => clearTimeout(timer);
   }, []);
-
-  useEffect(() => {
-    console.log('data1');
-    if (inputTextUrl.length > 0 && !isUrlValid(apiUrl)) {
-      setFirebaseData((prevFirebaseData) => {
-        return [...prevFirebaseData, 'Invalid URL. Please enter a valid URL'];
-      });
-    } else if(inputTextUrl.length > 0 && dataFound === false){
-      setFirebaseData((prevFirebaseData) => {
-        return [...prevFirebaseData, 'Product not found in HTML'];
-      });
-    }
-  }, [inputTextUrl, dataFound, apiUrl]);
-
-  useEffect(() => {
-    console.log('data2');
-    const fetchData = async () => {
-      try {
-        
-        if(htmlData) {
-
-          const regexName = /<h1[^>]*class="name___120FN"[^>]*><span>([^<]+)<\/span><\/h1>/;
-          const matchName = htmlData.match(regexName);
-
-          const regexPrice = /<div class="gl-price-item gl-price-item--sale notranslate[^>]*>(.*?)<\/div>/;
-          const matchPrice = htmlData.match(regexPrice);
-
-          const regexColor = /<div\s+data-auto-id="color-label"[^>]*>(.*?)<\/div>/;
-          const matchColor = htmlData.match(regexColor);
-
-          const regexImageUrl = /<div class="content___3m-ue" data-auto-id="pdp__image-viewer__desktop-zoom__content"[^>]*><picture[^>]*><source[^>]*><img src="([^"]+)"[^>]*>/;
-          const matchImageUrl = htmlData.match(regexImageUrl);
-
-          if (matchName || matchPrice || matchColor || matchImageUrl) {
-            const listValueProduct = {
-              nameProduct: matchName[1],
-              priceProduct: matchPrice[1],
-              colorProduct: matchColor[1],
-              imageUrlProduct: matchImageUrl[1],
-            };
-
-            await set(ref(database, 'valueProducts'), listValueProduct); //put data to firebase
-            const firebaseResponse = await get(ref(database, 'valueProducts'));  //get data from firebase then processing
-            setFirebaseData((prevFirebaseData) => [...prevFirebaseData, firebaseResponse.val()]);
-          } else {
-            console.error('Product not found in HTML');
-            setDataFound(false);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-      setLoading(false)
-    };
-
-    fetchData();
-  }, [htmlData]);
-
+    
   useEffect(() => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
     }
   }, [firebaseData, loading]);
 
-  const isUrlValid = (url) => {
-    const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
-    return urlRegex.test(url);
-  };
-
   const handleInputChange = (event) => {
     setApiUrl(event);
   };
 
-  const handleButtonClick = async () => {
+  const fetchData = async () => {
     try {
-      if(apiUrl) {
-        setInputTextUrl((prevInputTextUrl) => [...prevInputTextUrl, apiUrl]);
-        if(isUrlValid(apiUrl)){
-          setLoading(true);
-          setDataFound(true);
-          const response = await axios.get(apiUrl); //crawl data from website
-          setHtmlData(response.data);
-          setApiUrl('');
-          
-        }
+      const firebaseResponse = await get(ref(database, 'valueProducts'));
+      const dataProductFirebase = firebaseResponse.val();
+      console.log(dataProductFirebase);
+      if(dataProductFirebase.imageUrlProduct1 === '' && dataProductFirebase.imageUrlProduct2 === '' && dataProductFirebase.imageUrlProduct3 === ''){
+        fetchData();
+      } else {
+        setFirebaseData((prevFirebaseData) => [...prevFirebaseData, dataProductFirebase]);
+        setLoading(false);
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
+
+  const handleButtonClick = async () => {
+    if (apiUrl) {
+      try {
+        // Update inputTextUrl in Firebase
+        await set(ref(database, 'inputTextUrl'), apiUrl);
+
+        const listValueProduct = {
+          imageUrlProduct1: '',
+          imageUrlProduct2: '',
+          imageUrlProduct3: '',
+        };
+
+        await set(ref(database, 'valueProducts'), listValueProduct); //put data to firebase
+
+        setInputTextUrl((prevInputTextUrl) => [...prevInputTextUrl, apiUrl]);
+  
+        // Reset apiUrl and set loading to true
+        setApiUrl('');
+        setLoading(true);
+
+        fetchData();
+  
+      } catch (error) {
+        console.error("Error updating data in Firebase:", error);
+      } 
+    }
+  };
+
+  console.log(firebaseData);
+  
   return (
     <div className="App">
       <div className='App-content'>
@@ -141,8 +104,8 @@ function App() {
                   ) : (
                     <>
                       <Avatar className='avatar-chat-box'  size={50}><FontAwesomeIcon icon={faRobot} size="2xl" style={{color: "#19c37d",}} /></Avatar>
-                      <span  className='chat-message'  >
-                        Hello! I'm your virtual assistant. Please enter the product URL, and I will provide detailed information and advice for you. Thank you for visiting!
+                      <span  className='chat-message' >
+                        Hello! I'm your virtual assistant. Please enter product information, I will advise on a few suitable products according to your requirements. Thank you for visiting!
                       </span >
                     </>
                   )}
@@ -156,35 +119,29 @@ function App() {
                       <Avatar className='avatar-user-chat-box'  size={50}><FontAwesomeIcon icon={faUser} size='2xl' style={{color: "#17c7ff",}} /></Avatar>
                     </Flex>
                   </Flex>
+
                   {firebaseData[index] && (
                     <Flex gap="middle" align="start" justify="start" className='row-message-user'>
                       <Flex justify='center' align='flex-start'>
                         <Avatar className='avatar-chat-box' size={50}><FontAwesomeIcon icon={faRobot} size="2xl" style={{color: "#19c37d",}} /></Avatar>
-                        {firebaseData[index].nameProduct || firebaseData[index].colorProduct || firebaseData[index].priceProduct ? (
                           <span className='chat-message'>
-                            <Flex key={index} gap="middle" align="start" justify="start" className='row-message-user'>
-                              <Flex justify='center' align='flex-start'>
-                                {firebaseData[index].imageUrlProduct && <Image className='img-product-firebase' width={200} src={firebaseData[index].imageUrlProduct} alt="Product" />}
-                                <div className='content-product-then-image'>
-                                  <strong>Product's name: </strong>{firebaseData[index].nameProduct} <br/>
-                                  <strong>Product color: </strong>{firebaseData[index].colorProduct} <br/>
-                                  <strong>Product price: </strong>{firebaseData[index].priceProduct} <br/>
-                                </div>
-                              </Flex>
-                            </Flex>
+                            <p className='content-product-then-image'>I hope the product below matches your description. If you need any further assistance, please ask me more questions.</p>
+                            <Row gutter={5}  justify="center">
+                              <Col span={8}>
+                                <Image className='img-product-firebase' width={200} src={firebaseData[index].imageUrlProduct1} alt="Product1" />
+                              </Col>
+                              <Col span={8}>
+                                <Image className='img-product-firebase' width={200} src={firebaseData[index].imageUrlProduct2} alt="Product2" />
+                              </Col>
+                              <Col span={8}>
+                                <Image className='img-product-firebase' width={200} src={firebaseData[index].imageUrlProduct3} alt="Product3" />
+                              </Col>
+                            </Row>
                           </span>
-                        ) : (
-                        <Flex gap="middle" align="start" justify="start" className='row-message-user'>
-                          <Flex justify='center' align='flex-start'>
-                            <span className='chat-message'>
-                              {firebaseData[index]}
-                            </span>
-                          </Flex>
-                        </Flex>
-                        )}
                       </Flex>
                     </Flex>
                   )}
+
                 </div>
               ))}
               {loading ? (
@@ -201,16 +158,18 @@ function App() {
                       <Flex justify='center' align='flex-start'>
                         <Avatar className='avatar-chat-box' size={50}><FontAwesomeIcon icon={faRobot} size="2xl" style={{color: "#19c37d",}} /></Avatar>
                         <span className='chat-message'>
-                          <Flex key={index} gap="middle" align="start" justify="start" className='row-message-user'>
-                            <Flex justify='center' align='flex-start'>
-                              {product.imageUrlProduct && <Image className='img-product-firebase' width={200} src={firebaseData[index].imageUrlProduct} alt="Product" />}
-                              <div className='content-product-then-image'>
-                                <strong>Product's name: </strong>{product.nameProduct} 
-                                <strong>Product color: </strong>{product.colorProduct} 
-                                <strong>Product price: </strong>{product.priceProduct} 
-                              </div>
-                            </Flex>
-                          </Flex>
+                          <p className='content-product-then-image'>I hope the product below matches your description. If you need any further assistance, please ask me more questions.</p>
+                          <Row gutter={5}  justify="center">
+                              <Col span={8}>
+                                <Image className='img-product-firebase' width={200} src={product.imageUrlProduct1} alt="Product1" />
+                              </Col>
+                              <Col span={8}>
+                                <Image className='img-product-firebase' width={200} src={product.imageUrlProduct2} alt="Product2" />
+                              </Col>
+                              <Col span={8}>
+                                <Image className='img-product-firebase' width={200} src={product.imageUrlProduct3} alt="Product3" />
+                              </Col>
+                          </Row>
                         </span>
                       </Flex>
                     </Flex>
@@ -224,7 +183,7 @@ function App() {
             <Row gutter={5} justify={'center'}>
               <Col className="gutter-row" xs={20} sm={20} md={15} lg={15} xl={15} xxl={15}>
                   <TextArea
-                    placeholder="Enter the product URL you want to search for"
+                    placeholder="Message ChatBox_TQDD..."
                     autoSize={{ minRows: 1, maxRows: 6 }}                
                     value={apiUrl}
                     onChange={(e) => handleInputChange(e.target.value)}

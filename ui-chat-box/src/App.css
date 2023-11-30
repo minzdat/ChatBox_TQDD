@@ -48,7 +48,7 @@
   border-radius: 24px;
 }
 .content-product-then-image{
-  margin-left: 20px;
+  padding-left: 20px;
   font-size: 16px;
 }
 .row-message-user{
@@ -67,7 +67,7 @@
   background-color: rgb(19,19,20); 
   border-radius: 8px; 
   padding: 20px;
-  max-width: 50vw;
+  width: 45vw;
   word-wrap: break-word;
   color: white;
   font-size: 16px;
@@ -119,10 +119,6 @@
   }
   .img-product-firebase{
     size: 1px;
-  }
-  .content-product-then-image{
-    margin-left: 1px;
-  
   }
   .text-area-seatch-chat-box{
     font-size: 15px;
